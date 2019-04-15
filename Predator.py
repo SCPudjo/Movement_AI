@@ -16,9 +16,10 @@ class Predator:
         self.type = "Predator"
 
         self.vision = int(config_creature['vision'])
-        self.movement_speed = int(config_creature['movement_speed'])
+        self.movement_speed = int(config_creature['movement_speed']) / 10
         self.turn_speed = float(config_creature['turn_speed']) / 100
         self.distance = int(config_creature['distance'])
+        self.reach = int(config_creature['reach'])
 
         self.position = random.uniform(0, self.world.width), random.uniform(0, self.world.height)
         self.direction = (random.uniform(-1, 1), random.uniform(-1, 1))  # initialize random direction
@@ -43,22 +44,53 @@ class Predator:
 
         self.position = new_position
 
-    def hunt_target(self):
+    def separation(self):
+
+        for each in self.world.object_container:
+            if each.type is "Obstacle":
+                if Calculations.get_distance(self, each) < self.distance:
+
+                    if self.position[0] > each.position[0] and self.position[0] - each.position[0] < self.distance:
+                        self.position = self.position[0] + self.turn_speed * 10, self.position[1]
+                    elif self.position[0] < each.position[0] and each.position[0] - self.position[0] < self.distance:
+                        self.position = self.position[0] - self.turn_speed * 10, self.position[1]
+
+                    if self.position[1] > each.position[1] and self.position[1] - each.position[1] < self.distance:
+                        self.position = self.position[0], self.position[1] + self.turn_speed * 10
+                    elif self.position[1] < each.position[1] and each.position[1] - self.position[1] < self.distance:
+                        self.position = self.position[0], self.position[1] - self.turn_speed * 10
+
+    def eat_target(self):
+
         if self.target_object is not None:
-            target_position = self.target_object.position
 
-            if self.position != target_position:
+            if self.target_object in self.world.object_container:
 
-                if self.position[0] > target_position[0]:
-                    self.position = self.position[0] - self.movement_speed, self.position[1]
-                else:
-                    self.position = self.position[0] + self.movement_speed, self.position[1]
+                if Calculations.get_distance(self, self.target_object) < self.reach:
+                    self.world.object_container.remove(self.target_object)
+                    self.target_object = None
 
-                if self.position[1] > target_position[1]:
-                    self.position = self.position[0], self.position[1] - self.movement_speed
-                else:
-                    self.position = self.position[0], self.position[1] + self.movement_speed
+    def hunt_target(self):
 
+        if self.target_object is not None:
+
+            if self.target_object in self.world.object_container:
+
+                target_position = self.target_object.position
+                if self.position != target_position:
+                    if self.position[0] > target_position[0]:
+                        self.position = self.position[0] - self.movement_speed, self.position[1]
+                    else:
+                        self.position = self.position[0] + self.movement_speed, self.position[1]
+
+                    if self.position[1] > target_position[1]:
+                        self.position = self.position[0], self.position[1] - self.movement_speed
+                    else:
+                        self.position = self.position[0], self.position[1] + self.movement_speed
+            else:
+                self.target_object = None
+        else:
+            self.move()
 
     def update_target(self):
 
@@ -67,7 +99,7 @@ class Predator:
                 if self.target_object is not None:
                     if Calculations.get_distance(self, self.target_object) > Calculations.get_distance(self, each):
                         self.target_object = each
-                else:
+                elif Calculations.get_distance(self, each) < self.vision:
                     self.target_object = each
 
     def update_position(self):
@@ -78,8 +110,9 @@ class Predator:
 
         self.update_target()
         self.display_target()
+        self.separation()
         self.hunt_target()
-        self.move()
+        self.eat_target()
         self.update_position()
 
     def display_target(self):

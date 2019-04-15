@@ -6,9 +6,11 @@ from Creature import Creature
 from Predator import Predator
 from Obstacle import Wall
 from Obstacle import Pillar
+from Target import Target
 from behaviours.Idle import Idle
 from behaviours.Wandering import Wandering
 from behaviours.Boid_Flocking import Boid_Flocking
+from behaviours.Targeted_Movement import Targeted_Movement
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -36,6 +38,8 @@ class World:
         self.time_start = time.time()
         self.display_range = False
 
+        self.behaviour = "Wandering"
+
         self.spawn_objects_on_start()
 
     def spawn_objects_on_start(self):
@@ -55,9 +59,26 @@ class World:
 
         self.object_container.append(Predator(self))
 
+    def spawn_target(self):
+
+        self.despawn_target()
+        x, y = pygame.mouse.get_pos()
+        self.object_container.append(Target(self, x, y))
+
+    def despawn_target(self):
+
+        for each in self.object_container:
+            if each.type is "Target":
+                self.object_container.remove(each)
+                break
 
 World = World()
 paused = False
+counter = 0
+display_counter = 0
+fps = None
+
+display_text = None
 
 while True:  # main game loop
 
@@ -91,6 +112,10 @@ while True:  # main game loop
             if event.key == pygame.K_p:
                 World.spawn_predator()
 
+            # spawn target
+            if event.key == pygame.K_t:
+                World.spawn_target()
+
             # remove all obstacles
             if event.key == pygame.K_o:
 
@@ -104,21 +129,46 @@ while True:  # main game loop
                     else:
                         counter += 1
 
+            # set behaviour to Idle
             if event.key == pygame.K_1:
+                World.behaviour = "Idle"
                 for each in World.object_container:
                     if each.type is "Boid":
                         each.behaviour = Idle(each)
 
+            # set behaviour to Wandering
             if event.key == pygame.K_2:
+                World.behaviour = "Wandering"
                 for each in World.object_container:
                     if each.type is "Boid":
                         each.behaviour = Wandering(each)
 
+            # set behaviour to Boid Flocking
             if event.key == pygame.K_3:
+                World.behaviour = "Flocking"
                 for each in World.object_container:
                     if each.type is "Boid":
                         each.behaviour = Boid_Flocking(each)
 
+            # set behaviour to Targeted_Movement
+            if event.key == pygame.K_4:
+                World.behaviour = "Targeted Movement"
+                for each in World.object_container:
+                    if each.type is "Boid":
+                        each.behaviour = Targeted_Movement(each)
+
+
+            # toggle range in flocking mode
+            if event.key == pygame.K_r:
+
+                if World.display_range:
+                    World.display_range = False
+                    print(World.display_range)
+                else:
+                    World.display_range = True
+                    print(World.display_range)
+
+            # Reset
             if event.key == pygame.K_z:
                 World.spawn_objects_on_start()
 
@@ -185,17 +235,40 @@ while True:  # main game loop
             #   Wall Generation Keys End
 
     if not paused:
+        display_counter += 1
+
+        frame_times = []
+        start_t = time.time()
 
         World.surface.fill(World.surface_color)
 
         if World.display_range:
             for each in World.object_container:
-                if each.type is "Boid":
-                    pass
+                if each.type is "Boid" and each.behaviour.type == "Flocking":
+                    each.behaviour.display_range()
 
         for each in World.object_container:
             each.update()
             #print(each.behaviour)
 
+        if display_counter == 10:
+            display_text = World.behaviour + " | " + str(round(fps, 2))
+            display_counter = 0
+
+        # display text in top left
+        font = pygame.font.Font('freesansbold.ttf', 20)
+        text = font.render(display_text, True, (100, 100, 100))
+        textRect = text.get_rect()
+        textRect.midleft = (25, 25)
+        World.surface.blit(text, textRect)
+
         pygame.display.update()
         pygame.time.Clock().tick(World.FPS)
+
+        end_t = time.time()
+        time_taken = end_t - start_t
+        start_t = end_t
+        frame_times.append(time_taken)
+        frame_times = frame_times[-20:]
+        fps = len(frame_times) / sum(frame_times)
+

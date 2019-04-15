@@ -14,16 +14,21 @@ Boid Flocking: Simulation of flocking behaviour based on the artificial life pro
     Alignment: steer towards the average heading of local flockmates
     Cohesion: steer to move towards the average position (center of mass) of local flockmates
     
+Targeted Movement: Creatures will move towards a target (place with T)
+    
 Controls:
 
     1: Set behaviour to Idle    
     2: Set behaviour to Wander    
     3: Set behaviour to Boid Flocking
+    4: Set behaviour to Targeted Movement
     
     S: Spawn a pair of creatures
     P: Spawn a predator (WIP)
+    T: Place target
+    Z: Reset simulation
+    
     Keypad 1-9: Spawn a wall
     O: Remove all walls
-    Z: Reset simulation
     
     SPACE: Pause simulation

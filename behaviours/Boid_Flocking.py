@@ -50,6 +50,7 @@ class Boid_Flocking:
             self.creature.direction = self.creature.direction[0] - self.creature.turn_speed, self.creature.direction[1]
         elif self.creature.direction[0] < target_direction[0]:
             self.creature.direction = self.creature.direction[0] + self.creature.turn_speed, self.creature.direction[1]
+
         if self.creature.direction[1] > target_direction[1]:
             self.creature.direction = self.creature.direction[0], self.creature.direction[1] - self.creature.turn_speed
         elif self.creature.direction[1] < target_direction[1]:
@@ -96,7 +97,6 @@ class Boid_Flocking:
                         self.creature.position = self.creature.position[0] + self.creature.turn_speed * 10, self.creature.position[1]
                     elif self.creature.position[0] < each.position[0] and each.position[0] - self.creature.position[0] < self.creature.distance:
                         self.creature.position = self.creature.position[0] - self.creature.turn_speed * 10, self.creature.position[1]
-
 
                     if self.creature.position[1] > each.position[1] and self.creature.position[1] - each.position[1] < self.creature.distance:
                         self.creature.position = self.creature.position[0], self.creature.position[1] + self.creature.turn_speed * 10

@@ -2,6 +2,7 @@ import configparser
 import pygame
 import random
 import Calculations
+from behaviours.Boid_Flocking import Boid_Flocking
 from behaviours.Wandering import Wandering
 from behaviours.Idle import Idle
 
@@ -27,7 +28,7 @@ class Creature:
         self.direction = (random.uniform(-1, 1), random.uniform(-1, 1))  # initialize random direction
         self.direction = Calculations.get_vector(self.direction)
 
-        self.behaviour = Idle(self)
+        self.behaviour = Wandering(self)
 
     def update_position(self):
 
