@@ -1,12 +1,18 @@
 import pygame, sys
 import time
 import configparser
+from Species import Species
 from Creature import Creature
+from Predator import Predator
+from Obstacle import Wall
+from Obstacle import Pillar
+from behaviours.Idle import Idle
+from behaviours.Wandering import Wandering
+from behaviours.Boid_Flocking import Boid_Flocking
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 config_world = config['WORLD']
-
 
 class World:
 
@@ -27,25 +33,34 @@ class World:
         self.surface_color = (245, 245, 220)
         self.surface.fill(self.surface_color)
 
-        self.update_counter = 0
-        self.display_counter = 0
-
-        #self.update_increment = 1
-        #self.display_increment = 1
         self.time_start = time.time()
+        self.display_range = False
 
-        for each in range(0, 25):
-            self.object_container.append(Creature(self))
+        self.spawn_objects_on_start()
+
+    def spawn_objects_on_start(self):
+
+        self.object_container = []
+
+        for each in range(0, 20):
+            self.object_container.append(Creature(self, Species.Cardinal))
+            self.object_container.append(Creature(self, Species.Raven))
 
     def spawn_creature(self):
 
-        self.object_container.append(Creature(self))
+        self.object_container.append(Creature(self, Species.Cardinal))
+        self.object_container.append(Creature(self, Species.Raven))
+
+    def spawn_predator(self):
+
+        self.object_container.append(Predator(self))
 
 
 World = World()
 paused = False
 
 while True:  # main game loop
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -72,63 +87,115 @@ while True:  # main game loop
             if event.key == pygame.K_s:
                 World.spawn_creature()
 
+            # spawn a creature
+            if event.key == pygame.K_p:
+                World.spawn_predator()
+
+            # remove all obstacles
+            if event.key == pygame.K_o:
+
+                num = len(World.object_container)
+                counter = 0
+
+                while counter < num:
+                    if World.object_container[counter].type is "Obstacle":
+                        World.object_container.pop(counter)
+                        num = len(World.object_container)
+                    else:
+                        counter += 1
+
+            if event.key == pygame.K_1:
+                for each in World.object_container:
+                    if each.type is "Boid":
+                        each.behaviour = Idle(each)
+
+            if event.key == pygame.K_2:
+                for each in World.object_container:
+                    if each.type is "Boid":
+                        each.behaviour = Wandering(each)
+
+            if event.key == pygame.K_3:
+                for each in World.object_container:
+                    if each.type is "Boid":
+                        each.behaviour = Boid_Flocking(each)
+
+            if event.key == pygame.K_z:
+                World.spawn_objects_on_start()
+
+            # ------------------------------
+            #   Wall Generation Keys Start
+
+            if event.key == pygame.K_KP1:
+                x, y = pygame.mouse.get_pos()
+                for each in range(0, 21):
+                    World.object_container.append(Wall(World, x, y))
+                    x -= 5
+                    y += 5
+
+            if event.key == pygame.K_KP2:
+                x, y = pygame.mouse.get_pos()
+                for each in range(0, 21):
+                    World.object_container.append(Wall(World, x, y))
+                    y += 5
+
+            if event.key == pygame.K_KP3:
+                x, y = pygame.mouse.get_pos()
+                for each in range(0, 21):
+                    World.object_container.append(Wall(World, x, y))
+                    x += 5
+                    y += 5
+
+            if event.key == pygame.K_KP4:
+                x, y = pygame.mouse.get_pos()
+                for each in range(0, 21):
+                    World.object_container.append(Wall(World, x, y))
+                    x -= 5
+
+            if event.key == pygame.K_KP5:
+                x, y = pygame.mouse.get_pos()
+                World.object_container.append(Pillar(World, x, y))
+
+            if event.key == pygame.K_KP6:
+                x, y = pygame.mouse.get_pos()
+                for each in range(0, 21):
+                    World.object_container.append(Wall(World, x, y))
+                    x += 5
+
+            if event.key == pygame.K_KP7:
+                x, y = pygame.mouse.get_pos()
+                for each in range(0, 21):
+                    World.object_container.append(Wall(World, x, y))
+                    x -= 5
+                    y -= 5
+
+            if event.key == pygame.K_KP8:
+                x, y = pygame.mouse.get_pos()
+                for each in range(0, 21):
+                    World.object_container.append(Wall(World, x, y))
+                    y += -5
+
+            if event.key == pygame.K_KP9:
+                x, y = pygame.mouse.get_pos()
+                for each in range(0, 21):
+                    World.object_container.append(Wall(World, x, y))
+                    x += 5
+                    y -= 5
+
+            # ------------------------------
+            #   Wall Generation Keys End
+
     if not paused:
 
         World.surface.fill(World.surface_color)
 
+        if World.display_range:
+            for each in World.object_container:
+                if each.type is "Boid":
+                    pass
+
         for each in World.object_container:
             each.update()
-
-        '''
-
-        if World.update_counter >= World.FPS:
-
-            World.surface.fill(World.surface_color)
-            World.surface.blit(World.background, (0,0))
-
-            for each in World.obstacle_container:
-                each.update()
-
-            for each in World.creature_container:
-                each.update()
-
-            
-            if config_world['display_names'] == 'True':
-                for each in World.creature_container:
-                    font = pygame.font.Font('freesansbold.ttf', 20)
-                    text = font.render(each.name, True, (100, 100, 100))
-                    textRect = text.get_rect()
-                    textRect.center = (each.body.world_movement.x_center, each.body.world_movement.y_center - 40)
-                    World.surface.blit(text, textRect)
-        
-            World.update_counter = 0
-
-        if World.display_counter >= World.FPS:
-            if config_world['display_data'] == 'True':
-                print("----------------------------------------")
-                print("          W O R L D - S T A T S         ")
-                print("----------------------------------------")
-                print("Time Elapsed: " + str(round(time.time() - World.time_start, 0)) + " seconds")
-                print("Creatures: " + str(World.creature_container))
-                print("Obstacle: " + str(World.item_container))
-                print("")
-                
-                for each in World.obstacle_container:
-                    each.display_values()
-
-                for each in World.creature_container:
-                    pass
-
-                for each in World.creature_container:
-                    pass
-                
-                print("World Actions:")
-
-            World.display_counter = 0
-            
-        '''
+            #print(each.behaviour)
 
         pygame.display.update()
         pygame.time.Clock().tick(World.FPS)
-        #World.update_counter += World.update_increment
-        #World.display_counter += World.display_increment
