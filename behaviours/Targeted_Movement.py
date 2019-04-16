@@ -2,6 +2,7 @@ import configparser
 import pygame
 import random
 import Calculations
+from Species import Species
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -19,6 +20,10 @@ class Targeted_Movement:
         self.target = None
         self.target_reached = False
 
+        self.old_species = creature.species
+        self.counter = 0
+
+    # returns instance of targett
     def get_target(self):
 
         for each in self.world.object_container:
@@ -28,39 +33,40 @@ class Targeted_Movement:
             else:
                 self.target = None
 
-    def move_to_target(self):
+    # moves creature towards target if target is found
+    def move(self):
+        if not self.target_reached and self.target is not None:
 
-        if self.target is not None:
-
-            self.target_reached = False
-
-            if self.creature.position != self.target.position:
-
-                if self.creature.position[0] > self.target.position[0]:
-                    self.creature.position = self.creature.position[0] - self.creature.movement_speed, self.creature.position[1]
-                elif self.creature.position[0] < self.target.position[0]:
-                    self.creature.position = self.creature.position[0] + self.creature.movement_speed, self.creature.position[1]
-
-                if self.creature.position[1] > self.target.position[1]:
-                    self.creature.position = self.creature.position[0], self.creature.position[1] - self.creature.movement_speed
-                elif self.creature.position[1] < self.target.position[1]:
-                    self.creature.position = self.creature.position[0], self.creature.position[1] + self.creature.movement_speed
+            new_direction = (self.target.position[0] - self.creature.position[0],
+                             self.target.position[1] - self.creature.position[1])
+            new_direction = Calculations.get_vector(new_direction)
+            new_position = [self.creature.position[0] + self.creature.movement_speed * new_direction[0],
+                            self.creature.position[1] + self.creature.movement_speed * new_direction[1]]
+            if new_position[0] > self.world.width:
+                new_position[0] = 0
+            elif new_position[0] < 0:
+                new_position[0] = self.world.width
+            if new_position[1] > self.world.height:
+                new_position[1] = 0
+            elif new_position[1] < 0:
+                new_position[1] = self.world.height
+            self.creature.position = new_position
 
     def reach_target(self):
 
         if self.target is not None and not self.target_reached:
-
-            if Calculations.get_distance(self.creature, self.target) < 10:
+            if Calculations.get_distance(self.creature, self.target) < 5:
                 self.target = None
                 self.target_reached = True
+                self.creature.species = Species.Goldfinch
 
             for each in self.world.object_container:
 
                 if each.type is "Boid":
-                    if Calculations.get_distance(self.creature, each) < 20 and each.behaviour.target_reached:
+                    if Calculations.get_distance(self.creature, each) < 10 and each.behaviour.target_reached:
                         self.target = None
                         self.target_reached = True
-
+                        self.creature.species = Species.Goldfinch
 
 
     def separation(self):
@@ -80,12 +86,21 @@ class Targeted_Movement:
                         elif self.creature.position[1] < each.position[1] and each.position[1] - self.creature.position[1] < self.creature.distance:
                             self.creature.position = self.creature.position[0], self.creature.position[1] - self.creature.turn_speed * 10
 
+    def magic(self):
+        if self.creature.species is not self.old_species:
+            self.counter += 1
+            pygame.draw.circle(self.world.surface, (255, 223, 0), (int(self.creature.position[0]), int(self.creature.position[1])), self.counter, 1)
+            if self.counter >= 50:
+                self.creature.species = self.old_species
+                self.counter = 0
+
     def update(self):
 
         self.get_target()
-        self.move_to_target()
+        self.move()
         self.reach_target()
         self.separation()
+        self.magic()
 
     # --------------------------------------------------
     #   Display Functions

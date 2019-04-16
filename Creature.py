@@ -2,9 +2,7 @@ import configparser
 import pygame
 import random
 import Calculations
-from behaviours.Boid_Flocking import Boid_Flocking
 from behaviours.Wandering import Wandering
-from behaviours.Idle import Idle
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -24,16 +22,18 @@ class Creature:
         self.turn_speed = float(config_creature['turn_speed']) / 100
         self.distance = int(config_creature['distance'])
 
-        self.position = random.uniform(0, self.world.width), random.uniform(0, self.world.height)
+        self.position = (random.uniform(0, self.world.width), random.uniform(0, self.world.height))
         self.direction = (random.uniform(-1, 1), random.uniform(-1, 1))  # initialize random direction
         self.direction = Calculations.get_vector(self.direction)
 
         self.behaviour = Wandering(self)
 
+    # updates actual visual position in the world
     def update_position(self):
 
         pygame.draw.circle(self.world.surface, self.species.value, (int(self.position[0]), int(self.position[1])), 5, 0)
 
+    # updates called every frame
     def update(self):
 
         self.update_position()

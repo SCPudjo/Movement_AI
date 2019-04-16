@@ -11,6 +11,7 @@ from behaviours.Idle import Idle
 from behaviours.Wandering import Wandering
 from behaviours.Boid_Flocking import Boid_Flocking
 from behaviours.Targeted_Movement import Targeted_Movement
+from behaviours.Stealth import Stealth
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -22,6 +23,12 @@ class World:
 
         pygame.init()  # initiate pygame
         pygame.display.set_caption('Movement AI')
+
+        icon = pygame.image.load('icon.png')
+        pygame.display.set_icon(icon)
+
+
+
         pygame.key.set_repeat(500, 100)
 
         self.FPS = int(config_world['FPS'])
@@ -32,7 +39,7 @@ class World:
         self.height = int(config_world['height'])
 
         self.surface = pygame.display.set_mode((self.width, self.height))  # pygame.Surface object for the window
-        self.surface_color = (245, 245, 220)
+        self.surface_color = (150, 150, 150)
         self.surface.fill(self.surface_color)
 
         self.time_start = time.time()
@@ -80,6 +87,10 @@ class World:
         self.despawn_target()
         x, y = pygame.mouse.get_pos()
         self.object_container.append(Target(self, x, y))
+
+        for each in self.object_container:
+            if each.type is "Boid":
+                each.behaviour.target_reached = False
 
     def despawn_target(self):
 
@@ -176,6 +187,13 @@ while True:  # main game loop
                     if each.type is "Boid":
                         each.behaviour = Targeted_Movement(each)
 
+            # set behaviour to Stealth
+            if event.key == pygame.K_5:
+                World.behaviour = "Stealth"
+                for each in World.object_container:
+                    if each.type is "Boid":
+                        each.behaviour = Stealth(each)
+
 
             # toggle range in flocking mode
             if event.key == pygame.K_r:
@@ -190,6 +208,7 @@ while True:  # main game loop
             # Reset
             if event.key == pygame.K_z:
                 World.spawn_objects_on_start()
+                World.behaviour = "Wandering"
 
             # ------------------------------
             #   Wall Generation Keys Start
@@ -241,7 +260,7 @@ while True:  # main game loop
                 x, y = pygame.mouse.get_pos()
                 for each in range(0, 50):
                     World.object_container.append(Wall(World, x, y))
-                    y += -5
+                    y += -2
 
             if event.key == pygame.K_KP9:
                 x, y = pygame.mouse.get_pos()
@@ -280,7 +299,7 @@ while True:  # main game loop
 
         # display text in top left
         font = pygame.font.Font('freesansbold.ttf', 20)
-        text = font.render(display_text, True, (100, 100, 100))
+        text = font.render(display_text, True, (255,255,255))
         textRect = text.get_rect()
         textRect.midleft = (25, 25)
         World.surface.blit(text, textRect)
