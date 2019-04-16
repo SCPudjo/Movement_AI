@@ -46,14 +46,30 @@ class World:
 
         self.object_container = []
 
-        for each in range(0, 20):
+        for each in range(0, 25):
             self.object_container.append(Creature(self, Species.Cardinal))
             self.object_container.append(Creature(self, Species.Raven))
 
     def spawn_creature(self):
 
-        self.object_container.append(Creature(self, Species.Cardinal))
-        self.object_container.append(Creature(self, Species.Raven))
+        cardinal = Creature(self, Species.Cardinal)
+        self.object_container.append(cardinal)
+        raven = Creature(self, Species.Raven)
+        self.object_container.append(raven)
+
+        if self.behaviour == "Idle":
+            cardinal.behaviour = Idle(cardinal)
+            raven.behaviour = Idle(raven)
+        if self.behaviour == "Wandering":
+            cardinal.behaviour = Wandering(cardinal)
+            raven.behaviour = Wandering(raven)
+        if self.behaviour == "Flocking":
+            cardinal.behaviour = Boid_Flocking(cardinal)
+            raven.behaviour = Boid_Flocking(raven)
+        if self.behaviour == "Targeted Movement":
+            cardinal.behaviour = Targeted_Movement(cardinal)
+            raven.behaviour = Targeted_Movement(raven)
+
 
     def spawn_predator(self):
 
@@ -113,7 +129,7 @@ while True:  # main game loop
                 World.spawn_predator()
 
             # spawn target
-            if event.key == pygame.K_t:
+            if event.key == pygame.K_t and World.behaviour is "Targeted Movement":
                 World.spawn_target()
 
             # remove all obstacles
@@ -132,6 +148,7 @@ while True:  # main game loop
             # set behaviour to Idle
             if event.key == pygame.K_1:
                 World.behaviour = "Idle"
+                World.despawn_target()
                 for each in World.object_container:
                     if each.type is "Boid":
                         each.behaviour = Idle(each)
@@ -139,6 +156,7 @@ while True:  # main game loop
             # set behaviour to Wandering
             if event.key == pygame.K_2:
                 World.behaviour = "Wandering"
+                World.despawn_target()
                 for each in World.object_container:
                     if each.type is "Boid":
                         each.behaviour = Wandering(each)
@@ -146,6 +164,7 @@ while True:  # main game loop
             # set behaviour to Boid Flocking
             if event.key == pygame.K_3:
                 World.behaviour = "Flocking"
+                World.despawn_target()
                 for each in World.object_container:
                     if each.type is "Boid":
                         each.behaviour = Boid_Flocking(each)
@@ -177,29 +196,29 @@ while True:  # main game loop
 
             if event.key == pygame.K_KP1:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 21):
+                for each in range(0, 50):
                     World.object_container.append(Wall(World, x, y))
-                    x -= 5
-                    y += 5
+                    x -= 2
+                    y += 2
 
             if event.key == pygame.K_KP2:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 21):
+                for each in range(0, 50):
                     World.object_container.append(Wall(World, x, y))
-                    y += 5
+                    y += 2
 
             if event.key == pygame.K_KP3:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 21):
+                for each in range(0, 50):
                     World.object_container.append(Wall(World, x, y))
-                    x += 5
-                    y += 5
+                    x += 2
+                    y += 2
 
             if event.key == pygame.K_KP4:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 21):
+                for each in range(0, 50):
                     World.object_container.append(Wall(World, x, y))
-                    x -= 5
+                    x -= 2
 
             if event.key == pygame.K_KP5:
                 x, y = pygame.mouse.get_pos()
@@ -207,34 +226,38 @@ while True:  # main game loop
 
             if event.key == pygame.K_KP6:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 21):
+                for each in range(0, 50):
                     World.object_container.append(Wall(World, x, y))
-                    x += 5
+                    x += 2
 
             if event.key == pygame.K_KP7:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 21):
+                for each in range(0, 50):
                     World.object_container.append(Wall(World, x, y))
-                    x -= 5
-                    y -= 5
+                    x -= 2
+                    y -= 2
 
             if event.key == pygame.K_KP8:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 21):
+                for each in range(0, 50):
                     World.object_container.append(Wall(World, x, y))
                     y += -5
 
             if event.key == pygame.K_KP9:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 21):
+                for each in range(0, 50):
                     World.object_container.append(Wall(World, x, y))
-                    x += 5
-                    y -= 5
+                    x += 2
+                    y -= 2
 
             # ------------------------------
             #   Wall Generation Keys End
 
     if not paused:
+
+        while len(World.object_container) < 50:
+            World.spawn_creature()
+
         display_counter += 1
 
         frame_times = []
@@ -245,7 +268,7 @@ while True:  # main game loop
         if World.display_range:
             for each in World.object_container:
                 if each.type is "Boid" and each.behaviour.type == "Flocking":
-                    each.behaviour.display_range()
+                    pass #each.behaviour.display_range()
 
         for each in World.object_container:
             each.update()

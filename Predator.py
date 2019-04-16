@@ -20,6 +20,8 @@ class Predator:
         self.turn_speed = float(config_creature['turn_speed']) / 100
         self.distance = int(config_creature['distance'])
         self.reach = int(config_creature['reach'])
+        self.digestion_time = int(config_creature['digestion_time'])
+        self.counter = 0
 
         self.position = random.uniform(0, self.world.width), random.uniform(0, self.world.height)
         self.direction = (random.uniform(-1, 1), random.uniform(-1, 1))  # initialize random direction
@@ -69,6 +71,7 @@ class Predator:
                 if Calculations.get_distance(self, self.target_object) < self.reach:
                     self.world.object_container.remove(self.target_object)
                     self.target_object = None
+                    self.movement_speed /= 2
 
     def hunt_target(self):
 
@@ -93,7 +96,7 @@ class Predator:
             self.move()
 
     def update_target(self):
-
+        self.target_object = None
         for each in self.world.object_container:
             if each.type is "Boid":
                 if self.target_object is not None:
@@ -106,13 +109,20 @@ class Predator:
 
         pygame.draw.circle(self.world.surface, (255, 0, 0), (int(self.position[0]), int(self.position[1])), 8, 0)
 
-    def update(self):
+    def restore_speed(self):
+        if self.counter >= self.digestion_time:
+            if self.movement_speed < int(config_creature['movement_speed']) / 10:
+                self.movement_speed *= 2
+                self.counter = 0
 
+    def update(self):
+        self.counter += 1
         self.update_target()
         self.display_target()
         self.separation()
         self.hunt_target()
         self.eat_target()
+        self.restore_speed()
         self.update_position()
 
     def display_target(self):
