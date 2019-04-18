@@ -124,6 +124,7 @@ class Predator:
         self.eat_target()
         self.restore_speed()
         self.update_position()
+        print(self.movement_speed)
 
     def display_target(self):
 

@@ -1,5 +1,9 @@
 import math
 
+def rotate_vector(vector, change_x, change_y):
+
+    vector = vector[0] + change_x, vector[1] + change_y
+    return get_vector(vector)
 
 def get_vector(vector):
 

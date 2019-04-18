@@ -39,9 +39,12 @@ class Targeted_Movement:
 
             new_direction = (self.target.position[0] - self.creature.position[0],
                              self.target.position[1] - self.creature.position[1])
-            new_direction = Calculations.get_vector(new_direction)
-            new_position = [self.creature.position[0] + self.creature.movement_speed * new_direction[0],
-                            self.creature.position[1] + self.creature.movement_speed * new_direction[1]]
+
+            self.creature.direction = Calculations.get_vector(new_direction)
+
+            new_position = [self.creature.position[0] + self.creature.movement_speed * self.creature.direction[0],
+                            self.creature.position[1] + self.creature.movement_speed * self.creature.direction[1]]
+
             if new_position[0] > self.world.width:
                 new_position[0] = 0
             elif new_position[0] < 0:

@@ -3,7 +3,7 @@ import pygame
 import random
 import Calculations
 from behaviours.Wandering import Wandering
-
+from behaviours.Boid_Flocking import Boid_Flocking
 config = configparser.ConfigParser()
 config.read('config.ini')
 config_creature = config['CREATURE']
@@ -26,15 +26,38 @@ class Creature:
         self.direction = (random.uniform(-1, 1), random.uniform(-1, 1))  # initialize random direction
         self.direction = Calculations.get_vector(self.direction)
 
-        self.behaviour = Wandering(self)
+        self.behaviour = Boid_Flocking(self)
+
+    # --------------------------------------------------
+    #   Display Functions
+
+    def display_direection(self):
+
+        pygame.draw.line(self.world.surface, self.species.value, self.position,
+                         (self.position[0] + self.direction[0] * 10, self.position[1] + self.direction[1] * 10), 2)
+
+    def display_range(self):
+
+        pygame.draw.circle(self.world.surface, self.species.value, (int(self.position[0]), int(self.position[1])), self.vision, 1)
+
+    def display_connection(self):
+
+        for each in self.objects_in_range:
+            if each.type is "Boid" and each.species is self.species:
+                pygame.draw.line(self.world.surface, self.creature.species.value, self.creature.position, each.position, 1)
+
+    # --------------------------------------------------
+    #   Display Functions
 
     # updates actual visual position in the world
     def update_position(self):
 
         pygame.draw.circle(self.world.surface, self.species.value, (int(self.position[0]), int(self.position[1])), 5, 0)
 
+
     # updates called every frame
     def update(self):
 
         self.update_position()
+        self.display_direection()
         self.behaviour.update()

@@ -39,44 +39,32 @@ class Boid_Flocking:
 
     # add all objects within creature's vision to objects_in_range array
     def get_close_objects(self):
+        print(self.objects_in_range)
         self.objects_in_range = []
         for each in self.world.object_container:
             if each is not self.creature:
-
                 if Calculations.get_distance(self.creature, each) <= self.creature.vision:
-                    if each not in self.objects_in_range:
-                        self.objects_in_range.append(each)
+                    self.objects_in_range.append(each)
 
     def boid_flocking(self):
-        '''
+
+        self.avoid_collision = False
         for each in self.objects_in_range:
-            if Calculations.get_distance(self.creature, each) < self.creature.distance and each.species is not self.species:
-                self.avoid_collision = True
+            if each.type is "Obstacle":
+                if Calculations.get_distance(self.creature, each) < self.creature.vision:
+                    self.avoid_collision = True
+            elif each.type is "Boid":
+                if Calculations.get_distance(self.creature, each) < self.creature.distance:
+                    self.avoid_collision = True
 
         if self.avoid_collision:
             self.separation()
         else:
-            self.avoid_collision = False
             self.cohesion()
             self.alignment()
-        '''
-        self.separation()
-        self.cohesion()
-        self.alignment()
 
     # change direction by turning_speed based on new target direction
     def change_direction(self, target_direction):
-        '''
-        target_direction = (0, 0)
-
-        if alignment is None and cohesion is None:
-            return
-
-        if cohesion is not None:
-            target_direction = target_direction[0] + cohesion[0], cohesion[1] + target_direction[1]
-        elif alignment is not None:
-            target_direction = target_direction[0] + alignment[0], alignment[1] + target_direction[1]
-        '''
 
         if self.creature.direction[0] > target_direction[0]:
             self.creature.direction = self.creature.direction[0] - self.creature.turn_speed, self.creature.direction[1]
@@ -90,24 +78,6 @@ class Boid_Flocking:
 
     # steer towards the average heading of local flockmates
     def alignment(self):
-        '''
-        total_direction = [self.creature.direction[0], self.creature.direction[1]]
-        number_of_boids = 1
-
-        for each in self.objects_in_range:
-            if each.type is "Boid":
-                if each.species is self.species:
-                    total_direction[0] += each.direction[0]
-                    total_direction[1] += each.direction[1]
-                    number_of_boids += 1
-
-        if number_of_boids == 1:
-            return None
-
-        average_direction = total_direction[0] / number_of_boids, total_direction[1] / number_of_boids
-        average_direction = Calculations.get_vector(average_direction)
-        return average_direction
-        '''
 
         total_direction = [self.creature.direction[0], self.creature.direction[1]]
         number_of_boids = 1
@@ -126,10 +96,9 @@ class Boid_Flocking:
 
     # steer to move towards the average position (center of mass) of local flockmates
     def cohesion(self):
-        '''
+
         total_positions = [self.creature.position[0], self.creature.position[1]]
         number_of_boids = 1
-        print(number_of_boids)
 
         for each in self.objects_in_range:
             if each.type is "Boid":
@@ -140,51 +109,61 @@ class Boid_Flocking:
                     total_positions[1] += each.position[1]
 
         if number_of_boids == 1:
-            print("returned")
             return None
 
         average_position = total_positions[0] / number_of_boids, total_positions[1] / number_of_boids
-        target_direction = average_position[0] - self.creature.position[0], average_position[1] - self.creature.position[1]
-        target_direction = Calculations.get_vector(target_direction)
-        return target_direction
-        '''
 
-        total_positions = [self.creature.position[0], self.creature.position[1]]
-        number_of_boids = 1
+        if self.creature.position[0] > average_position[0] and self.creature.position[1] > average_position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, -self.creature.turn_speed, -self.creature.turn_speed)
 
-        for each in self.objects_in_range:
-            if each.type is "Boid":
-                if each.species is self.species:
-                    number_of_boids += 1
-                    total_positions[0] += each.position[0]
-                    total_positions[1] += each.position[1]
+        elif self.creature.position[0] > average_position[0] and self.creature.position[1] < average_position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, -self.creature.turn_speed, self.creature.turn_speed)
 
-        average_position = total_positions[0] / number_of_boids, total_positions[1] / number_of_boids
+        elif self.creature.position[0] < average_position[0] and self.creature.position[1] > average_position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, self.creature.turn_speed, -self.creature.turn_speed)
 
-        if self.creature.position[0] > average_position[0]:
-            self.creature.position = self.creature.position[0] - self.creature.turn_speed * 5, self.creature.position[1]
-        else:
-            self.creature.position = self.creature.position[0] + self.creature.turn_speed * 5, self.creature.position[1]
-        if self.creature.position[1] > average_position[1]:
-            self.creature.position = self.creature.position[0], self.creature.position[1] - self.creature.turn_speed * 5
-        else:
-            self.creature.position = self.creature.position[0], self.creature.position[1] + self.creature.turn_speed * 5
+        elif self.creature.position[0] < average_position[0] and self.creature.position[1] < average_position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, -self.creature.turn_speed, -self.creature.turn_speed)
 
     # steer to avoid crowding local flockmates
     def separation(self):
 
-        for each in self.objects_in_range:
-            if Calculations.get_distance(self.creature, each) < self.creature.distance:
+        distance = 0
 
-                if self.creature.position[0] > each.position[0] and self.creature.position[0] - each.position[0] < self.creature.distance:
-                    self.creature.position = self.creature.position[0] + self.creature.turn_speed * 10, self.creature.position[1]
-                elif self.creature.position[0] < each.position[0] and each.position[0] - self.creature.position[0] < self.creature.distance:
-                    self.creature.position = self.creature.position[0] - self.creature.turn_speed * 10, self.creature.position[1]
+        for each in self.world.object_container:
 
-                if self.creature.position[1] > each.position[1] and self.creature.position[1] - each.position[1] < self.creature.distance:
-                    self.creature.position = self.creature.position[0], self.creature.position[1] + self.creature.turn_speed * 10
-                elif self.creature.position[1] < each.position[1] and each.position[1] - self.creature.position[1] < self.creature.distance:
-                    self.creature.position = self.creature.position[0], self.creature.position[1] - self.creature.turn_speed * 10
+            if each.type is "Obstacle":
+                distance = self.creature.vision
+            elif each.type is "Boid":
+                distance = self.creature.distance
+
+            if Calculations.get_distance(self.creature, each) <= 10:
+                self.avoid_object(each, 1)
+            elif Calculations.get_distance(self.creature, each) < distance / 5:
+                self.avoid_object(each, self.creature.turn_speed)
+            elif Calculations.get_distance(self.creature, each) < distance / 4:
+                self.avoid_object(each, self.creature.turn_speed / 2)
+            elif Calculations.get_distance(self.creature, each) < distance / 3:
+                self.avoid_object(each, self.creature.turn_speed / 3)
+            elif Calculations.get_distance(self.creature, each) < distance / 2:
+                self.avoid_object(each, self.creature.turn_speed / 4)
+            elif Calculations.get_distance(self.creature, each) < self.creature.vision:
+                self.avoid_object(each, self.creature.turn_speed / 5)
+
+
+    def avoid_object(self, object, turning_speed):
+
+        if self.creature.position[0] > object.position[0] and self.creature.position[1] > object.position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, turning_speed, turning_speed)
+
+        elif self.creature.position[0] > object.position[0] and self.creature.position[1] < object.position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, turning_speed, -turning_speed)
+
+        elif self.creature.position[0] < object.position[0] and self.creature.position[1] > object.position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, -turning_speed, turning_speed)
+
+        elif self.creature.position[0] < object.position[0] and self.creature.position[1] < object.position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, -turning_speed, -turning_speed)
 
     # --------------------------------------------------
     #   Update Functions
@@ -193,18 +172,9 @@ class Boid_Flocking:
 
         self.get_close_objects()
         self.boid_flocking()
-        self.display_connection()
         self.move()
 
     # --------------------------------------------------
     #   Display Functions
 
-    def display_range(self):
 
-        pygame.draw.circle(self.world.surface, self.creature.species.value, (int(self.creature.position[0]), int(self.creature.position[1])), self.creature.vision, 1)
-
-    def display_connection(self):
-
-        for each in self.objects_in_range:
-            if each.type is "Boid" and each.species is self.species:
-                pygame.draw.line(self.world.surface, self.creature.species.value, self.creature.position, each.position, 1)

@@ -45,7 +45,8 @@ class World:
         self.time_start = time.time()
         self.display_range = False
 
-        self.behaviour = "Wandering"
+        self.boids_per_species = int(config_world['boids_per_species'])
+        self.behaviour = "Boid Flocking"
 
         self.spawn_objects_on_start()
 
@@ -53,7 +54,7 @@ class World:
 
         self.object_container = []
 
-        for each in range(0, 25):
+        for each in range(0, self.boids_per_species):
             self.object_container.append(Creature(self, Species.Cardinal))
             self.object_container.append(Creature(self, Species.Raven))
 
@@ -215,29 +216,29 @@ while True:  # main game loop
 
             if event.key == pygame.K_KP1:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 50):
+                for each in range(0, 10):
                     World.object_container.append(Wall(World, x, y))
-                    x -= 2
-                    y += 2
+                    x -= 7
+                    y += 7
 
             if event.key == pygame.K_KP2:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 50):
+                for each in range(0, 10):
                     World.object_container.append(Wall(World, x, y))
-                    y += 2
+                    y += 10
 
             if event.key == pygame.K_KP3:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 50):
+                for each in range(0, 10):
                     World.object_container.append(Wall(World, x, y))
-                    x += 2
-                    y += 2
+                    x += 7
+                    y += 7
 
             if event.key == pygame.K_KP4:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 50):
+                for each in range(0, 10):
                     World.object_container.append(Wall(World, x, y))
-                    x -= 2
+                    x -= 10
 
             if event.key == pygame.K_KP5:
                 x, y = pygame.mouse.get_pos()
@@ -245,37 +246,37 @@ while True:  # main game loop
 
             if event.key == pygame.K_KP6:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 50):
+                for each in range(0, 10):
                     World.object_container.append(Wall(World, x, y))
-                    x += 2
+                    x += 10
 
             if event.key == pygame.K_KP7:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 50):
+                for each in range(0, 10):
                     World.object_container.append(Wall(World, x, y))
-                    x -= 2
-                    y -= 2
+                    x -= 7
+                    y -= 7
 
             if event.key == pygame.K_KP8:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 50):
+                for each in range(0, 10):
                     World.object_container.append(Wall(World, x, y))
-                    y += -2
+                    y -= 10
 
             if event.key == pygame.K_KP9:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 50):
+                for each in range(0, 10):
                     World.object_container.append(Wall(World, x, y))
-                    x += 2
-                    y -= 2
+                    x += 7
+                    y -= 7
 
             # ------------------------------
             #   Wall Generation Keys End
 
     if not paused:
 
-        while len(World.object_container) < 50:
-            World.spawn_creature()
+        # while len(World.object_container) < World.boids_per_species * 2:
+        #     World.spawn_creature()
 
         display_counter += 1
 
