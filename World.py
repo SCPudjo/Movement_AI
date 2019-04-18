@@ -3,7 +3,6 @@ import time
 import configparser
 from Species import Species
 from Creature import Creature
-from Predator import Predator
 from Obstacle import Wall
 from Obstacle import Pillar
 from Target import Target
@@ -12,6 +11,7 @@ from behaviours.Wandering import Wandering
 from behaviours.Boid_Flocking import Boid_Flocking
 from behaviours.Targeted_Movement import Targeted_Movement
 from behaviours.Stealth import Stealth
+from behaviours.Predator import Predator
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -26,8 +26,6 @@ class World:
 
         icon = pygame.image.load('icon.png')
         pygame.display.set_icon(icon)
-
-
 
         pygame.key.set_repeat(500, 100)
 
@@ -81,7 +79,10 @@ class World:
 
     def spawn_predator(self):
 
-        self.object_container.append(Predator(self))
+        predator = Creature(self, Species.Eagle)
+        predator.behaviour = Predator(predator)
+        self.object_container.append(predator)
+
 
     def spawn_target(self):
 
@@ -136,7 +137,7 @@ while True:  # main game loop
             if event.key == pygame.K_s:
                 World.spawn_creature()
 
-            # spawn a creature
+            # spawn a predator
             if event.key == pygame.K_p:
                 World.spawn_predator()
 
@@ -194,17 +195,6 @@ while True:  # main game loop
                 for each in World.object_container:
                     if each.type is "Boid":
                         each.behaviour = Stealth(each)
-
-
-            # toggle range in flocking mode
-            if event.key == pygame.K_r:
-
-                if World.display_range:
-                    World.display_range = False
-                    print(World.display_range)
-                else:
-                    World.display_range = True
-                    print(World.display_range)
 
             # Reset
             if event.key == pygame.K_z:
@@ -307,6 +297,7 @@ while True:  # main game loop
 
         pygame.display.update()
         pygame.time.Clock().tick(World.FPS)
+
 
         end_t = time.time()
         time_taken = end_t - start_t

@@ -52,22 +52,43 @@ class Wandering:
         elif self.creature.direction[1] < target_direction[1]:
             self.creature.direction = self.creature.direction[0], self.creature.direction[1] + self.creature.turn_speed
 
-
     def separation(self):
 
+        distance = 0
+
         for each in self.world.object_container:
-            if each.type is "Boid" or each.type is "Obstacle":
-                if Calculations.get_distance(self.creature, each) < self.creature.distance:
 
-                    if self.creature.position[0] > each.position[0] and self.creature.position[0] - each.position[0] < self.creature.distance:
-                        self.creature.position = self.creature.position[0] + self.creature.turn_speed * 10, self.creature.position[1]
-                    elif self.creature.position[0] < each.position[0] and each.position[0] - self.creature.position[0] < self.creature.distance:
-                        self.creature.position = self.creature.position[0] - self.creature.turn_speed * 10, self.creature.position[1]
+            if each.type is "Obstacle":
+                distance = self.creature.vision
+            elif each.type is "Boid":
+                distance = self.creature.distance
 
-                    if self.creature.position[1] > each.position[1] and self.creature.position[1] - each.position[1] < self.creature.distance:
-                        self.creature.position = self.creature.position[0], self.creature.position[1] + self.creature.turn_speed * 10
-                    elif self.creature.position[1] < each.position[1] and each.position[1] - self.creature.position[1] < self.creature.distance:
-                        self.creature.position = self.creature.position[0], self.creature.position[1] - self.creature.turn_speed * 10
+            if Calculations.get_distance(self.creature, each) <= 10:
+                self.avoid_object(each, 1)
+            elif Calculations.get_distance(self.creature, each) < distance / 5:
+                self.avoid_object(each, self.creature.turn_speed)
+            elif Calculations.get_distance(self.creature, each) < distance / 4:
+                self.avoid_object(each, self.creature.turn_speed / 2)
+            elif Calculations.get_distance(self.creature, each) < distance / 3:
+                self.avoid_object(each, self.creature.turn_speed / 3)
+            elif Calculations.get_distance(self.creature, each) < distance / 2:
+                self.avoid_object(each, self.creature.turn_speed / 4)
+            elif Calculations.get_distance(self.creature, each) < self.creature.vision:
+                self.avoid_object(each, self.creature.turn_speed / 5)
+
+    def avoid_object(self, object, turning_speed):
+
+        if self.creature.position[0] > object.position[0] and self.creature.position[1] > object.position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, turning_speed, turning_speed)
+
+        elif self.creature.position[0] > object.position[0] and self.creature.position[1] < object.position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, turning_speed, -turning_speed)
+
+        elif self.creature.position[0] < object.position[0] and self.creature.position[1] > object.position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, -turning_speed, turning_speed)
+
+        elif self.creature.position[0] < object.position[0] and self.creature.position[1] < object.position[1]:
+            self.creature.direction = Calculations.rotate_vector(self.creature.direction, -turning_speed, -turning_speed)
 
     def update(self):
 

@@ -8,6 +8,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 config_creature = config['CREATURE']
 
+
 class Creature:
 
     def __init__(self, world, species):
@@ -17,6 +18,7 @@ class Creature:
 
         self.species = species
 
+        self.radius = int(config_creature['radius'])
         self.vision = int(config_creature['vision'])
         self.movement_speed = float(config_creature['movement_speed']) / 10
         self.turn_speed = float(config_creature['turn_speed']) / 100
@@ -31,7 +33,7 @@ class Creature:
     # --------------------------------------------------
     #   Display Functions
 
-    def display_direection(self):
+    def display_direction(self):
 
         pygame.draw.line(self.world.surface, self.species.value, self.position,
                          (self.position[0] + self.direction[0] * 10, self.position[1] + self.direction[1] * 10), 2)
@@ -40,11 +42,7 @@ class Creature:
 
         pygame.draw.circle(self.world.surface, self.species.value, (int(self.position[0]), int(self.position[1])), self.vision, 1)
 
-    def display_connection(self):
 
-        for each in self.objects_in_range:
-            if each.type is "Boid" and each.species is self.species:
-                pygame.draw.line(self.world.surface, self.creature.species.value, self.creature.position, each.position, 1)
 
     # --------------------------------------------------
     #   Display Functions
@@ -52,12 +50,12 @@ class Creature:
     # updates actual visual position in the world
     def update_position(self):
 
-        pygame.draw.circle(self.world.surface, self.species.value, (int(self.position[0]), int(self.position[1])), 5, 0)
+        pygame.draw.circle(self.world.surface, self.species.value, (int(self.position[0]), int(self.position[1])), self.radius, 0)
 
 
     # updates called every frame
     def update(self):
 
         self.update_position()
-        self.display_direection()
+        self.display_direction()
         self.behaviour.update()

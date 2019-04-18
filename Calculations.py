@@ -1,9 +1,5 @@
 import math
 
-def rotate_vector(vector, change_x, change_y):
-
-    vector = vector[0] + change_x, vector[1] + change_y
-    return get_vector(vector)
 
 def get_vector(vector):
 
@@ -17,6 +13,12 @@ def get_vector(vector):
 def get_average_vector(vector_A, vector_B):
 
     return get_vector(((vector_A[0] + vector_B[0]) / 2, (vector_A[1] + vector_B[1]) / 2))
+
+
+def rotate_vector(vector, change_x, change_y):
+
+    vector = vector[0] + change_x, vector[1] + change_y
+    return get_vector(vector)
 
 
 def get_distance(object_A, object_B):

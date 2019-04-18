@@ -39,7 +39,6 @@ class Boid_Flocking:
 
     # add all objects within creature's vision to objects_in_range array
     def get_close_objects(self):
-        print(self.objects_in_range)
         self.objects_in_range = []
         for each in self.world.object_container:
             if each is not self.creature:
@@ -104,7 +103,6 @@ class Boid_Flocking:
             if each.type is "Boid":
                 if each.species is self.species:
                     number_of_boids += 1
-                    print(number_of_boids)
                     total_positions[0] += each.position[0]
                     total_positions[1] += each.position[1]
 
@@ -135,9 +133,12 @@ class Boid_Flocking:
             if each.type is "Obstacle":
                 distance = self.creature.vision
             elif each.type is "Boid":
-                distance = self.creature.distance
+                if each.species is self.species:
+                    distance = self.creature.distance
+                else:
+                    distance = self.creature.vision
 
-            if Calculations.get_distance(self.creature, each) <= 10:
+            if Calculations.get_distance(self.creature, each) <= self.creature.radius * 2:
                 self.avoid_object(each, 1)
             elif Calculations.get_distance(self.creature, each) < distance / 5:
                 self.avoid_object(each, self.creature.turn_speed)
@@ -177,4 +178,8 @@ class Boid_Flocking:
     # --------------------------------------------------
     #   Display Functions
 
+    def display_connection(self):
 
+        for each in self.objects_in_range:
+            if each.type is "Boid" and each.species is self.species:
+                pygame.draw.line(self.world.surface, self.creature.species.value, self.creature.position, each.position, 1)
