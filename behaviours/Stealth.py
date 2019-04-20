@@ -68,7 +68,7 @@ class Stealth:
         number_of_boids = 1
 
         for each in self.objects_in_range:
-            if each.type is "Boid":
+            if each.type is "Creature":
                 if each.species is self.species:
                     number_of_boids += 1
                     total_positions[0] += each.position[0]

@@ -34,7 +34,7 @@ class Wandering:
 
     def wander(self):
 
-        if random.uniform(0, 1) > 0.25:
+        if random.uniform(0, 1) > 0.5:
             self.change_direction(self.wandering_direction)
             if random.uniform(0, 1) > 0.95:
                 self.wandering_direction = random.uniform(-1, 1), random.uniform(-1, 1)
@@ -60,7 +60,7 @@ class Wandering:
 
             if each.type is "Obstacle":
                 distance = self.creature.vision
-            elif each.type is "Boid":
+            elif each.type is "Creature":
                 distance = self.creature.distance
 
             if Calculations.get_distance(self.creature, each) <= 10:
@@ -92,7 +92,7 @@ class Wandering:
 
     def update(self):
 
-        self.separation()
+        #self.separation()
         self.wander()
         self.move()
 

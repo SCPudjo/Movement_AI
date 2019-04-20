@@ -8,7 +8,9 @@ Idle: Creature will idle and do nothing
 
 Wander: Creatures will wander in random directions while also avoiding collision
 
-Boid Flocking: Simulation of flocking behaviour based on the artificial life program developed by Craig Reynolds. A demonstration of Emergent behaviour that follows a set of three rules:
+Boid Flocking: Simulation of the flocking behaviour of birds. 
+Based on the artificial life program developed by Craig Reynolds. 
+An exmaple of emergent behaviour arising from a simple set of rules:
     
     Separation: steer to avoid crowding local flockmates
     Alignment: steer towards the average heading of local flockmates

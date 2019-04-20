@@ -52,7 +52,7 @@ class Boid_Flocking:
             if each.type is "Obstacle":
                 if Calculations.get_distance(self.creature, each) < self.creature.vision:
                     self.avoid_collision = True
-            elif each.type is "Boid":
+            elif each.type is "Creature":
                 if Calculations.get_distance(self.creature, each) < self.creature.distance:
                     self.avoid_collision = True
 
@@ -82,7 +82,7 @@ class Boid_Flocking:
         number_of_boids = 1
 
         for each in self.objects_in_range:
-            if each.type is "Boid":
+            if each.type is "Creature":
                 if each.species is self.species:
                     total_direction[0] += each.direction[0]
                     total_direction[1] += each.direction[1]
@@ -100,7 +100,7 @@ class Boid_Flocking:
         number_of_boids = 1
 
         for each in self.objects_in_range:
-            if each.type is "Boid":
+            if each.type is "Creature":
                 if each.species is self.species:
                     number_of_boids += 1
                     total_positions[0] += each.position[0]
@@ -132,7 +132,7 @@ class Boid_Flocking:
 
             if each.type is "Obstacle":
                 distance = self.creature.vision
-            elif each.type is "Boid":
+            elif each.type is "Creature":
                 if each.species is self.species:
                     distance = self.creature.distance
                 else:
@@ -181,5 +181,5 @@ class Boid_Flocking:
     def display_connection(self):
 
         for each in self.objects_in_range:
-            if each.type is "Boid" and each.species is self.species:
+            if each.type is "Creature" and each.species is self.species:
                 pygame.draw.line(self.world.surface, self.creature.species.value, self.creature.position, each.position, 1)

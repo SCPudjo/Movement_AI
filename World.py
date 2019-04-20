@@ -44,7 +44,7 @@ class World:
         self.display_range = False
 
         self.boids_per_species = int(config_world['boids_per_species'])
-        self.behaviour = "Boid Flocking"
+        self.behaviour = "Wandering"
 
         self.spawn_objects_on_start()
 
@@ -76,13 +76,18 @@ class World:
             cardinal.behaviour = Targeted_Movement(cardinal)
             raven.behaviour = Targeted_Movement(raven)
 
-
     def spawn_predator(self):
 
+        self.despawn_predator()
         predator = Creature(self, Species.Eagle)
         predator.behaviour = Predator(predator)
         self.object_container.append(predator)
 
+    def despawn_predator(self):
+
+        for each in self.object_container:
+            if each.behaviour.type is "Predator":
+                self.object_container.remove(each)
 
     def spawn_target(self):
 
@@ -91,7 +96,7 @@ class World:
         self.object_container.append(Target(self, x, y))
 
         for each in self.object_container:
-            if each.type is "Boid":
+            if each.type is "Creature":
                 each.behaviour.target_reached = False
 
     def despawn_target(self):
@@ -163,7 +168,7 @@ while True:  # main game loop
                 World.behaviour = "Idle"
                 World.despawn_target()
                 for each in World.object_container:
-                    if each.type is "Boid":
+                    if each.type is "Creature" and each.behaviour.type is not "Predator":
                         each.behaviour = Idle(each)
 
             # set behaviour to Wandering
@@ -171,7 +176,7 @@ while True:  # main game loop
                 World.behaviour = "Wandering"
                 World.despawn_target()
                 for each in World.object_container:
-                    if each.type is "Boid":
+                    if each.type is "Creature" and each.behaviour.type is not "Predator":
                         each.behaviour = Wandering(each)
 
             # set behaviour to Boid Flocking
@@ -179,21 +184,21 @@ while True:  # main game loop
                 World.behaviour = "Flocking"
                 World.despawn_target()
                 for each in World.object_container:
-                    if each.type is "Boid":
+                    if each.type is "Creature" and each.behaviour.type is not "Predator":
                         each.behaviour = Boid_Flocking(each)
 
             # set behaviour to Targeted_Movement
             if event.key == pygame.K_4:
                 World.behaviour = "Targeted Movement"
                 for each in World.object_container:
-                    if each.type is "Boid":
+                    if each.type is "Creature" and each.behaviour.type is not "Predator":
                         each.behaviour = Targeted_Movement(each)
 
             # set behaviour to Stealth
             if event.key == pygame.K_5:
                 World.behaviour = "Stealth"
                 for each in World.object_container:
-                    if each.type is "Boid":
+                    if each.type is "Creature" and each.behaviour.type is not "Predator":
                         each.behaviour = Stealth(each)
 
             # Reset
@@ -265,8 +270,8 @@ while True:  # main game loop
 
     if not paused:
 
-        # while len(World.object_container) < World.boids_per_species * 2:
-        #     World.spawn_creature()
+        while len(World.object_container) < World.boids_per_species * 2:
+            World.spawn_creature()
 
         display_counter += 1
 
@@ -277,7 +282,7 @@ while True:  # main game loop
 
         if World.display_range:
             for each in World.object_container:
-                if each.type is "Boid" and each.behaviour.type == "Flocking":
+                if each.type is "Creature" and each.behaviour.type == "Flocking":
                     pass #each.behaviour.display_range()
 
         for each in World.object_container:

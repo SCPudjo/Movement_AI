@@ -65,7 +65,7 @@ class Targeted_Movement:
 
             for each in self.world.object_container:
 
-                if each.type is "Boid":
+                if each.type is "Creature":
                     if Calculations.get_distance(self.creature, each) < 10 and each.behaviour.target_reached:
                         self.target = None
                         self.target_reached = True
@@ -76,7 +76,7 @@ class Targeted_Movement:
 
         #if self.target is not None:
             for each in self.world.object_container:
-                if each.type is "Boid" or each.type is "Obstacle":
+                if each.type is "Creature" or each.type is "Obstacle":
                     if Calculations.get_distance(self.creature, each) < self.creature.distance:
 
                         if self.creature.position[0] > each.position[0] and self.creature.position[0] - each.position[0] < self.creature.distance:

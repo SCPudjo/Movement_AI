@@ -14,7 +14,7 @@ class Creature:
     def __init__(self, world, species):
 
         self.world = world
-        self.type = "Boid"
+        self.type = "Creature"
 
         self.species = species
 
@@ -28,7 +28,7 @@ class Creature:
         self.direction = (random.uniform(-1, 1), random.uniform(-1, 1))  # initialize random direction
         self.direction = Calculations.get_vector(self.direction)
 
-        self.behaviour = Boid_Flocking(self)
+        self.behaviour = Wandering(self)
 
     # --------------------------------------------------
     #   Display Functions
@@ -41,7 +41,6 @@ class Creature:
     def display_range(self):
 
         pygame.draw.circle(self.world.surface, self.species.value, (int(self.position[0]), int(self.position[1])), self.vision, 1)
-
 
 
     # --------------------------------------------------
