@@ -107,7 +107,7 @@ class Predator:
         for each in self.world.object_container:
 
             if each.type is "Obstacle":
-                distance = self.creature.vision
+                distance = each.radius
             elif each.type is "Creature":
                 if each.species is self.species:
                     distance = self.creature.distance
@@ -159,4 +159,8 @@ class Predator:
 
     def display_connection(self):
         if self.prey is not None:
-            pygame.draw.line(self.world.surface, self.creature.species.value, self.creature.position, self.prey.position, 1)
+            pygame.draw.line(self.world.surface,
+                             self.creature.species.value,
+                             self.creature.position,
+                             self.prey.position,
+                             1)

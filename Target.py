@@ -1,5 +1,9 @@
+import configparser
 import pygame
 
+config = configparser.ConfigParser()
+config.read('config.ini')
+config_target = config['TARGET']
 
 class Target:
 
@@ -9,13 +13,24 @@ class Target:
         self.type = "Target"
 
         self.position = x, y
+        self.radius = int(config_target['radius'])
+
+        r = int(config_target['r'])
+        g = int(config_target['g'])
+        b = int(config_target['b'])
+
+        self.colour = (r, g, b)
 
     # --------------------------------------------------
     #   Update Functions
 
     def update_position(self):
 
-        pygame.draw.circle(self.world.surface, (0, 0, 200), (int(self.position[0]), int(self.position[1])), 15, 1)
+        pygame.draw.circle(self.world.surface,
+                           self.colour,
+                           (int(self.position[0]), int(self.position[1])),
+                           self.radius,
+                           1)
 
     def update(self):
 

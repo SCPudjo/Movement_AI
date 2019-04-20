@@ -101,4 +101,8 @@ class Wandering:
 
     def display_range(self):
 
-        pygame.draw.circle(self.world.surface, self.creature.species.value, (int(self.creature.position[0]), int(self.creature.position[1])), self.creature.vision, 1)
+        pygame.draw.circle(self.world.surface,
+                           self.creature.species.value,
+                           (int(self.creature.position[0]), int(self.creature.position[1])),
+                           self.creature.vision,
+                           1)

@@ -1,3 +1,6 @@
+# flocking behaviour based on Craig Reynold's Boids, an artificial life program
+# https://en.wikipedia.org/wiki/Boids#cite_note-5
+
 import configparser
 import pygame
 import Calculations
@@ -14,83 +17,121 @@ class Stealth:
         self.world = creature.world
         self.creature = creature
         self.species = creature.species
-        self.type = "Stealth"
+        self.type = "Flocking"
 
-        self.objects_in_range = []
-        self.predator_list = []
-        self.cover = None
-        self.find_cover()
+        self.avoid_collision = False
+        self.closest_pillar = None
+        self.predator = None
 
     # change position based on vector and movement speed
     def move(self):
+        print(Calculations.get_distance(self.creature, self.closest_pillar))
+        if Calculations.get_distance(self.creature, self.closest_pillar) > self.creature.distance + 20:
 
-        new_position = [self.creature.position[0] + self.creature.movement_speed * self.creature.direction[0],
-                        self.creature.position[1] + self.creature.movement_speed * self.creature.direction[1]]
-        if new_position[0] > self.world.width:
-            new_position[0] = 0
-        elif new_position[0] < 0:
-            new_position[0] = self.world.width
-        if new_position[1] > self.world.height:
-            new_position[1] = 0
-        elif new_position[1] < 0:
-            new_position[1] = self.world.height
-        self.creature.position = new_position
+            new_position = [self.creature.position[0] + self.creature.movement_speed * self.creature.direction[0],
+                            self.creature.position[1] + self.creature.movement_speed * self.creature.direction[1]]
+            if new_position[0] > self.world.width:
+                new_position[0] = 0
+            elif new_position[0] < 0:
+                new_position[0] = self.world.width
+            if new_position[1] > self.world.height:
+                new_position[1] = 0
+            elif new_position[1] < 0:
+                new_position[1] = self.world.height
+            self.creature.position = new_position
 
-    # add all objects within creature's vision to objects_in_range array
-    def get_close_objects(self):
-        self.objects_in_range = []
+    def get_closest_pillar(self):
+
+        self.closest_pillar = None
         for each in self.world.object_container:
-            if each is not self.creature:
+            if each.type is "Obstacle":
+                if self.closest_pillar is None:
+                    self.closest_pillar = each
+                elif Calculations.get_distance(self.creature, self.closest_pillar) > Calculations.get_distance(self.creature, each):
+                    self.closest_pillar = each
 
-                if Calculations.get_distance(self.creature, each) <= self.creature.vision:
-                    if each not in self.objects_in_range:
-                        self.objects_in_range.append(each)
+    def get_closest_predator(self):
 
-    def get_predators(self):
-
+        self.predator = None
         for each in self.world.object_container:
             if each.type is "Predator":
-                self.predator_list.append(each)
+                if self.closest_pillar is None:
+                    self.closest_pillar = each
+                elif Calculations.get_distance(self.creature, self.closest_pillar) > Calculations.get_distance(
+                        self.creature, each):
+                    self.closest_pillar = each
 
-    def find_cover(self):
-        if len(self.objects_in_range) > 0:
-            for each in self.world.object_container:
-                if each.type is "Obstacle":
+    def boid_flocking(self):
 
-                    if self.cover is None:
-                        self.cover = each
-                    elif Calculations.get_distance(self.creature, each) < Calculations.get_distance(self.creature, self.cover):
-                        self.cover = each
+        self.avoid_collision = False
+        for each in self.objects_in_range:
+            if each.type is "Obstacle":
+                if Calculations.get_distance(self.creature, each) < self.creature.vision:
+                    self.avoid_collision = True
+            elif each.type is "Creature":
+                if Calculations.get_distance(self.creature, each) < self.creature.distance:
+                    self.avoid_collision = True
 
+        if self.avoid_collision:
+            self.separation()
+        else:
+            self.cohesion()
+
+    # change direction by turning_speed based on new target direction
+    def change_direction(self, target_direction):
+
+        if self.creature.direction[0] > target_direction[0]:
+            self.creature.direction = self.creature.direction[0] - self.creature.turn_speed, self.creature.direction[1]
+        elif self.creature.direction[0] < target_direction[0]:
+            self.creature.direction = self.creature.direction[0] + self.creature.turn_speed, self.creature.direction[1]
+
+        if self.creature.direction[1] > target_direction[1]:
+            self.creature.direction = self.creature.direction[0], self.creature.direction[1] - self.creature.turn_speed
+        elif self.creature.direction[1] < target_direction[1]:
+            self.creature.direction = self.creature.direction[0], self.creature.direction[1] + self.creature.turn_speed
+
+    # steer to move towards the average position (center of mass) of local flockmates
     def cohesion(self):
 
-        total_positions = [self.creature.position[0], self.creature.position[1]]
-        number_of_boids = 1
+        if self.closest_pillar is not None:
 
-        for each in self.objects_in_range:
-            if each.type is "Creature":
-                if each.species is self.species:
-                    number_of_boids += 1
-                    total_positions[0] += each.position[0]
-                    total_positions[1] += each.position[1]
+            if self.creature.position[0] > self.closest_pillar.position[0] and self.creature.position[1] > self.closest_pillar.position[1]:
+                self.creature.direction = Calculations.rotate_vector(self.creature.direction, -self.creature.turn_speed,
+                                                                     -self.creature.turn_speed)
 
-        average_position = total_positions[0] / number_of_boids, total_positions[1] / number_of_boids
+            elif self.creature.position[0] > self.closest_pillar.position[0] and self.creature.position[1] < self.closest_pillar.position[
+                1]:
+                self.creature.direction = Calculations.rotate_vector(self.creature.direction, -self.creature.turn_speed,
+                                                                     self.creature.turn_speed)
 
-        if self.creature.position[0] > average_position[0]:
-            self.creature.position = self.creature.position[0] - self.creature.turn_speed * 5, self.creature.position[1]
-        else:
-            self.creature.position = self.creature.position[0] + self.creature.turn_speed * 5, self.creature.position[1]
-        if self.creature.position[1] > average_position[1]:
-            self.creature.position = self.creature.position[0], self.creature.position[1] - self.creature.turn_speed * 5
-        else:
-            self.creature.position = self.creature.position[0], self.creature.position[1] + self.creature.turn_speed * 5
+            elif self.creature.position[0] < self.closest_pillar.position[0] and self.creature.position[1] > self.closest_pillar.position[
+                1]:
+                self.creature.direction = Calculations.rotate_vector(self.creature.direction, self.creature.turn_speed,
+                                                                     -self.creature.turn_speed)
 
+            elif self.creature.position[0] < self.closest_pillar.position[0] and self.creature.position[1] < self.closest_pillar.position[
+                1]:
+                self.creature.direction = Calculations.rotate_vector(self.creature.direction, -self.creature.turn_speed,
+                                                                     -self.creature.turn_speed)
+
+    # --------------------------------------------------
+    #   Update Functions
 
     def update(self):
+
+        self.get_closest_pillar()
+        self.get_closest_predator()
+        #self.display_connection()
         self.cohesion()
         self.move()
 
+    # --------------------------------------------------
+    #   Display Functions
 
+    def display_connection(self):
 
-
-
+        pygame.draw.line(self.world.surface,
+                         self.creature.species.value,
+                         self.creature.position,
+                         self.closest_pillar.position,
+                         1)

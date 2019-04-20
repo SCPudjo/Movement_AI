@@ -1,6 +1,7 @@
 import pygame, sys
 import time
 import configparser
+import random
 from Species import Species
 from Creature import Creature
 from Obstacle import Wall
@@ -16,6 +17,7 @@ from behaviours.Predator import Predator
 config = configparser.ConfigParser()
 config.read('config.ini')
 config_world = config['WORLD']
+config_wall = config['WALL']
 
 class World:
 
@@ -44,6 +46,7 @@ class World:
         self.display_range = False
 
         self.boids_per_species = int(config_world['boids_per_species'])
+        self.number_of_stealth_pillars = int(config_world['number_of_stealth_pillars'])
         self.behaviour = "Wandering"
 
         self.spawn_objects_on_start()
@@ -75,6 +78,10 @@ class World:
         if self.behaviour == "Targeted Movement":
             cardinal.behaviour = Targeted_Movement(cardinal)
             raven.behaviour = Targeted_Movement(raven)
+        if self.behaviour == "Stealth":
+            cardinal.behaviour = Stealth(cardinal)
+            raven.behaviour = Stealth(raven)
+
 
     def spawn_predator(self):
 
@@ -86,8 +93,9 @@ class World:
     def despawn_predator(self):
 
         for each in self.object_container:
-            if each.behaviour.type is "Predator":
-                self.object_container.remove(each)
+            if each.type is "Creature":
+                if each.behaviour.type is "Predator":
+                    self.object_container.remove(each)
 
     def spawn_target(self):
 
@@ -196,6 +204,12 @@ while True:  # main game loop
 
             # set behaviour to Stealth
             if event.key == pygame.K_5:
+                World.object_container = []
+
+                for n in range(0, World.number_of_stealth_pillars):
+                    World.object_container.append(Pillar(World, random.uniform(0, World.width), random.uniform(0, World.height)))
+
+                World.spawn_creature()
                 World.behaviour = "Stealth"
                 for each in World.object_container:
                     if each.type is "Creature" and each.behaviour.type is not "Predator":
@@ -211,27 +225,27 @@ while True:  # main game loop
 
             if event.key == pygame.K_KP1:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 10):
+                for each in range(0, int(config_wall['size'])):
                     World.object_container.append(Wall(World, x, y))
                     x -= 7
                     y += 7
 
             if event.key == pygame.K_KP2:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 10):
+                for each in range(0, int(config_wall['size'])):
                     World.object_container.append(Wall(World, x, y))
                     y += 10
 
             if event.key == pygame.K_KP3:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 10):
+                for each in range(0, int(config_wall['size'])):
                     World.object_container.append(Wall(World, x, y))
                     x += 7
                     y += 7
 
             if event.key == pygame.K_KP4:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 10):
+                for each in range(0, int(config_wall['size'])):
                     World.object_container.append(Wall(World, x, y))
                     x -= 10
 
@@ -241,26 +255,26 @@ while True:  # main game loop
 
             if event.key == pygame.K_KP6:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 10):
+                for each in range(0, int(config_wall['size'])):
                     World.object_container.append(Wall(World, x, y))
                     x += 10
 
             if event.key == pygame.K_KP7:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 10):
+                for each in range(0, int(config_wall['size'])):
                     World.object_container.append(Wall(World, x, y))
                     x -= 7
                     y -= 7
 
             if event.key == pygame.K_KP8:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 10):
+                for each in range(0, int(config_wall['size'])):
                     World.object_container.append(Wall(World, x, y))
                     y -= 10
 
             if event.key == pygame.K_KP9:
                 x, y = pygame.mouse.get_pos()
-                for each in range(0, 10):
+                for each in range(0, int(config_wall['size'])):
                     World.object_container.append(Wall(World, x, y))
                     x += 7
                     y -= 7
@@ -270,8 +284,9 @@ while True:  # main game loop
 
     if not paused:
 
-        while len(World.object_container) < World.boids_per_species * 2:
-            World.spawn_creature()
+        # if World.behaviour is not "Stealth":
+        #     while len(World.object_container) < World.boids_per_species * 2:
+        #         World.spawn_creature()
 
         display_counter += 1
 

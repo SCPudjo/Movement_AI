@@ -182,4 +182,8 @@ class Boid_Flocking:
 
         for each in self.objects_in_range:
             if each.type is "Creature" and each.species is self.species:
-                pygame.draw.line(self.world.surface, self.creature.species.value, self.creature.position, each.position, 1)
+                pygame.draw.line(self.world.surface,
+                                 self.creature.species.value,
+                                 self.creature.position,
+                                 each.position,
+                                 1)
