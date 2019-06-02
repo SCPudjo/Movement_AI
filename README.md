@@ -2,6 +2,8 @@
 
 Demonstration of various Movement AI
 
+![Movement AI Demo](resources/demo.gif)
+
 ### Current Movements:
 
 Idle: Creature will idle and do nothing
@@ -10,7 +12,7 @@ Wander: Creatures will wander in random directions while also avoiding collision
 
 Boid Flocking: Simulation of the flocking behaviour of birds. 
 Based on the artificial life program developed by Craig Reynolds. 
-An exmaple of emergent behaviour arising from a simple set of rules:
+An example of emergent behaviour arising from a simple set of rules:
     
     Separation: steer to avoid crowding local flockmates
     Alignment: steer towards the average heading of local flockmates
