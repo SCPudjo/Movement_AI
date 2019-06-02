@@ -3,6 +3,14 @@
 Demonstration of various Movement AI
 
 ![Movement AI Demo](resources/demo.gif)
+### Requirements:
+
+You must install Python and the Pygame module to run this simulaton.
+Install Pygame with the following command:
+
+    pip install pygame
+    
+Execute World.py to start
 
 ### Current Movements:
 
