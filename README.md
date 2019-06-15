@@ -1,6 +1,6 @@
-# Movement_AI
+# Movement_Simulation
 
-Demonstration of various Movement AI
+A demonstration of various movement patterns
 
 ![Movement AI Demo](resources/demo.gif)
 ### Requirements:
