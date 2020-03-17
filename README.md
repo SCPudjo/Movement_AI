@@ -12,18 +12,15 @@ A demonstration of various movement patterns. Originally started as an attempt a
 
 > Cohesion: steer to move towards the average position (center of mass) of local flockmates
     
-All boid movement is accomplished through use of vectors (see ![Calculations.py](Calculations.py)). This is a work in progress with no real end goal. The plan is to add more complex movement patterns in the future.
+All boid movement is accomplished through use of vectors (see ![Calculations.py](src/Calculations.py)). This is a work in progress with no real end goal. The plan is to add more complex movement patterns in the future.
 ### Demo:
-![Movement AI Demo](resources/demo.gif)
+![Movement AI Demo](src/resources/demo.gif)
 
 ### Requirements:
 
-You must install Python and the Pygame module to run this simulaton.
-Install Pygame with the following command:
-
-    pip install pygame
+Both Python and the [Pygame](https://pypi.org/project/pygame/) module must be installed
     
-Execute World.py to start
+Execute start.bat to start
 
 ### Current Movements:
 
@@ -51,7 +48,7 @@ Will hide behind obstacles from Predators (WIP)
     5: Set behaviour to Stealth
     
     S: Spawn a pair of creatures
-    P: Spawn a predator (WIP)
+    P: Spawn a predator
     T: Place target
     Z: Reset simulation
     
