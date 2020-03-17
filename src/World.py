@@ -20,8 +20,6 @@ class World:
 
     def __init__(self):
 
-        print(Idle)
-
         pygame.init()  # initiate pygame
         pygame.display.set_caption('Movement AI')
 

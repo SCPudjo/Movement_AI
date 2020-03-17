@@ -2,29 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="019298fc-f23a-4b41-9d66-ee7b20172ab9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/behaviours/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Calculations.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Calculations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Creature.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Creature.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Obstacle.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Obstacle.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Species.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Species.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Target.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Target.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/World.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/World.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/behaviours/Boid_Flocking.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/behaviours/Boid_Flocking.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/behaviours/Fleeing.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/behaviours/Fleeing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/behaviours/Idle.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/behaviours/Idle.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/behaviours/Predator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/behaviours/Predator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/behaviours/Stealth.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/behaviours/Stealth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/behaviours/Targeted_Movement.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/behaviours/Targeted_Movement.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/behaviours/Wandering.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/behaviours/Wandering.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.ini" beforeDir="false" afterPath="$PROJECT_DIR$/src/config.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/demo.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/resources/demo.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Creature.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Creature.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/World.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/World.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,29 +16,23 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/World.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
+            <state relative-caret-position="357">
+              <caret line="21" selection-start-line="21" selection-end-line="21" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="867">
-                <caret line="51" column="19" lean-forward="true" selection-start-line="51" selection-start-column="19" selection-end-line="51" selection-end-column="19" />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Creature.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="29" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="29" />
+            <state relative-caret-position="374">
+              <caret line="22" column="90" selection-start-line="22" selection-start-column="90" selection-end-line="22" selection-end-column="90" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -154,9 +127,9 @@
         <option value="$PROJECT_DIR$/src/behaviours/Wandering.py" />
         <option value="$PROJECT_DIR$/src/behaviours/Stealth.py" />
         <option value="$PROJECT_DIR$/src/behaviours/Targeted_Movement.py" />
-        <option value="$PROJECT_DIR$/src/Creature.py" />
-        <option value="$PROJECT_DIR$/src/World.py" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/src/World.py" />
+        <option value="$PROJECT_DIR$/src/Creature.py" />
       </list>
     </option>
   </component>
@@ -178,6 +151,11 @@
             <path>
               <item name="Movement_AI" type="b2602c69:ProjectViewProjectNode" />
               <item name="Movement_AI" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Movement_AI" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Movement_AI" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Movement_AI" type="b2602c69:ProjectViewProjectNode" />
@@ -321,14 +299,14 @@
       <window_info id="DB Browser" />
       <window_info id="Project Explorer" />
       <window_info id="Job Explorer" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3175381" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3175381" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Console" />
       <window_info anchor="bottom" id="DB Execution Console" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32922733" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.20872274" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.20872274" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39771548" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -502,20 +480,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Creature.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="29" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/World.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -523,6 +487,26 @@
             <caret line="51" column="19" lean-forward="true" selection-start-line="51" selection-start-column="19" selection-end-line="51" selection-end-column="19" />
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/World.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" selection-start-line="21" selection-end-line="21" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Creature.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="90" selection-start-line="22" selection-start-column="90" selection-end-line="22" selection-end-column="90" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

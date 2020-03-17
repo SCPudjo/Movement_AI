@@ -13,7 +13,6 @@ class Creature:
         self.type = "Creature"
 
         self.species = species
-        print(self.species)
 
         self.radius = CREATURE['radius']
         self.vision = CREATURE['vision']
